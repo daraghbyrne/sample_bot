@@ -119,17 +119,17 @@ def determine_response body
     end
 end
 
-def varying_inputs content
-    content = params[:Body]
-    content = content.downcase.strip 
-    content_options = []
-    content.each do |content|
-        puts content.to_s
-        if str.include? 'feature'
-            content_options.push 
-        end
-    end
-end
+# def varying_inputs content
+#     content = params[:Body]
+#     content = content.downcase.strip 
+#     content_options = []
+#     content.each do |content|
+#         puts content.to_s
+#         if str.include? 'feature'
+#             content_options.push 
+#         end
+#     end
+# end
  
 error 403 do
    "Access forbidden"
