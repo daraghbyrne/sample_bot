@@ -34,9 +34,25 @@ get '/about' do
 end
 
 
+# get '/signup' do
+#     params[:code]
+#     if params[:code].nil?
+#         403
+#     elsif params[:code] == "bunny"
+#         'To jam out with this bot, text "groovy baby" to 1234'
+#     end
+# end
+
+# get '/signup/code' do
+#     if params[:code] == "bunny"
+#         "Great go ahead and sign up!"
+#     end
+# end
+
 get '/signup' do
     'To jam out with this bot, text "groovy baby" to 1234'
 end
+
 
 get '/incoming/sms' do
     "Blank message"
@@ -77,7 +93,17 @@ end
 get '/signup/:first_name/:number' do
     session['first_name'] = params['first_name']
     session['number'] = params['number']
-    'Hey there,' + params['first_name'] + '. We are saving your number:' + params['number'] + ' on our mixtape.'
+    client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
+    message = "Hi" + params[:first_name] + ", welcome to DJam Bot! I can respond to who, what, where, when and why. If you're stuck, type help."
+    # this will send a message from any end point
+    client.api.account.messages.create(
+     from: ENV["TWILIO_FROM"],
+     to: params[:number],
+     body: message
+    )
+	# response if eveything is OK
+    "You're signed up. You'll receive a text message in a few minutes from the bot. "
+    
 end
 
 
