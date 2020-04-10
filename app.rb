@@ -1,6 +1,13 @@
+# Heroku deployed URL: https://infinite-badlands-15249.herokuapp.com/
 require 'sinatra'
 require "sinatra/reloader" if development?
+require 'twilio-ruby'
 
+
+configure :development do
+    require 'dotenv'
+    Dotenv.load
+end
 
 enable :sessions
 greetings = ["Howdy, partner ", "Whattup homie ", "Aloha ", "Hi there "]
