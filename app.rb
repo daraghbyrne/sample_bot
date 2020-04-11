@@ -11,6 +11,7 @@ end
 
 enable :sessions
 greetings = ["Howdy, partner ", "Whattup homie ", "Aloha ", "Hi there "]
+songs = ["Sweet Caroline - Neil Diamond", "Bohemian Rhapsody - Queen", "Breaking Free - Troy Bolton aka Zaddy", "Wonderwall - Oasis", "She Will Be Loved - Maroon 5", "Chicken Friend - Zac Brown Band"]
 
 
 
@@ -94,7 +95,7 @@ get '/signup/:first_name/:number' do
     session['first_name'] = params['first_name']
     session['number'] = params['number']
     client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
-    message = "Hi" + params[:first_name] + ", welcome to DJam Bot! I can respond to who, what, where, when and why. If you're stuck, type help."
+    message = "Hi " + params[:first_name] + ", welcome to DJam Bot! I can respond to who, what, where, when and why. If you're stuck, type help."
     # this will send a message from any end point
     client.api.account.messages.create(
      from: ENV["TWILIO_FROM"],
@@ -107,9 +108,41 @@ get '/signup/:first_name/:number' do
 end
 
 
-get '/incoming/sms' do
-    403
-end 
+get "/sms/incoming" do 
+    session["counter"] ||= 1
+    body = params[:Body] || ""
+    sender = params[:From] || ""
+  
+    if session["counter"] == 1
+      message = "Thanks for your first message. From #{sender} saying #{body}"
+      media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
+    else
+      message = "Thanks for message number #{ session["counter"] }. #{body}"
+      media = nil
+    end
+      
+    # Build a twilio response object 
+    twiml = Twilio::TwiML::MessagingResponse.new do |r|
+      r.message do |m|
+  
+        # add the text of the response
+        m.body( "You should jam out to" + songs.sample + ". It's a classic!" )
+              
+        # add media if it is defined
+        unless media.nil?
+          m.media( "https://media.giphy.com/media/i79P9wUfnmPyo/giphy.gif" )
+        end
+      end 
+    end
+      
+    # increment the session counter
+    session["counter"] += 1
+      
+    # send a response to twilio 
+    content_type 'text/xml'
+    twiml.to_s
+    
+end
 
 get '/test/conversation' do
     return determine_response params[:Body]
