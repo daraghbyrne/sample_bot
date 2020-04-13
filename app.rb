@@ -126,7 +126,7 @@ get "/sms/incoming" do
       r.message do |m|
   
         # add the text of the response
-        m.body( "You should jam out to" + songs.sample + ". It's a classic!" )
+        m.body( "You should jam out to " + songs.sample + ". It's a classic!" )
               
         # add media if it is defined
         unless media.nil?
